@@ -1,0 +1,6 @@
+# Messages
+
+computers.list.title={0,choice,0#No computers|1#One computer|1<{0,number,integer} computers} found
+actors.list.title={0,choice,0#No actors|1#One actor|1<{0,number,integer} actors} found
+
+
