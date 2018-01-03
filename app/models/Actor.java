@@ -1,10 +1,12 @@
 package models;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import play.data.validation.Constraints;
 
-//import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.ManyToMany;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Computer entity managed by Ebean
@@ -20,7 +22,9 @@ public class Actor extends BaseModel {
     @Constraints.Required
     public String last_name;
 
-//    @ManyToMany
+    @ManyToMany(mappedBy = "actors")
+    @JsonManagedReference
+    public List<Film> films = new ArrayList<Film>();
 //    public Film film;
 
 }

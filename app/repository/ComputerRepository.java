@@ -5,6 +5,7 @@ import models.Computer;
 import play.db.ebean.EbeanConfig;
 
 import javax.inject.Inject;
+import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletionStage;
 
@@ -43,6 +44,11 @@ public class ComputerRepository {
                     .setFirstRow(page * pageSize)
                     .setMaxRows(pageSize)
                     .findPagedList(), executionContext);
+    }
+
+     public CompletionStage<List<Computer>> json() {
+        return supplyAsync(() ->
+                ebeanServer.find(Computer.class).findList(), executionContext);
     }
 
     public CompletionStage<Optional<Computer>> lookup(Long id) {

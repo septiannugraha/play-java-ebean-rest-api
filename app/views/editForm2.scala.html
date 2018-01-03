@@ -1,0 +1,37 @@
+@(id: Long, actorForm: Form[Actor], films: Map[String, String])
+
+@import helper._
+
+@main {
+    
+    <h1>Edit actor</h1>
+    
+    @form(routes.ActorController.update(id)) {
+        
+        <fieldset>
+            @CSRF.formField
+            @inputText(actorForm("first_name"), '_label -> "First name", '_help -> "")
+            @inputText(actorForm("last_name"), '_label -> "Last Name", '_help -> "")
+
+            @select(
+                actorForm("film.id"),
+                options(films),
+                '_label -> "Films", '_default -> "-- Choose a film --",
+                '_showConstraints -> false
+            )
+        
+        </fieldset>
+        
+        <div class="actions">
+            <input type="submit" value="Save this actor" class="btn primary"> or
+            <a href="@routes.ActorController.list()" class="btn">Cancel</a>
+        </div>
+        
+    }
+    
+    @form(routes.ActorController.delete(id), 'class -> "topRight") {
+        @CSRF.formField
+        <input type="submit" value="Delete this actor" class="btn danger">
+    }
+    
+}

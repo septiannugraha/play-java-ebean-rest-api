@@ -5,6 +5,7 @@ import models.Actor;
 import play.db.ebean.EbeanConfig;
 
 import javax.inject.Inject;
+import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletionStage;
 
@@ -44,6 +45,11 @@ public class ActorRepository {
                     .findPagedList(), executionContext);
     }
 
+    public CompletionStage<List<Actor>> json() {
+        return supplyAsync(() ->
+                ebeanServer.find(Actor.class).findList(), executionContext);
+    }
+
     public CompletionStage<Optional<Actor>> lookup(Long id) {
         return supplyAsync(() -> Optional.ofNullable(ebeanServer.find(Actor.class).setId(id).findOne()), executionContext);
     }
@@ -55,9 +61,6 @@ public class ActorRepository {
             try {
                 Actor savedActor = ebeanServer.find(Actor.class).setId(id).findOne();
                 if (savedActor!= null) {
-//                    savedComputer.company = newComputerData.company;
-//                    savedComputer.discontinued = newComputerData.discontinued;
-//                    savedComputer.introduced = newComputerData.introduced;
                     savedActor.first_name = newActorData.first_name;
                     savedActor.last_name = newActorData.last_name;
 
@@ -91,4 +94,5 @@ public class ActorRepository {
              return actor.id;
         }, executionContext);
     }
+
 }

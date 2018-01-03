@@ -1,4 +1,4 @@
-@(currentPage: io.ebean.PagedList[Actor], currentSortBy: String, currentOrder: String, currentFilter: String)
+@(currentPage: io.ebean.PagedList[Film], currentSortBy: String, currentOrder: String, currentFilter: String)
 
 @****************************************
 * Helper generating navigation links    *
@@ -22,7 +22,7 @@
     }
 
     // Generate the link
-    routes.ActorController.list(newPage, sortBy, order, currentFilter)
+    routes.HomeController.list3(newPage, sortBy, order, currentFilter)
 
 }
 
@@ -37,7 +37,7 @@
 
 @main {
 
-    <h1 id="homeTitle">@Messages("actors.list.title", currentPage.getTotalCount)</h1>
+    <h1 id="homeTitle">@Messages("films.list.title", currentPage.getTotalCount)</h1>
 
     @if(flash.containsKey("success")) {
         <div class="alert-message warning">
@@ -47,12 +47,12 @@
 
     <div id="actions">
 
-        <form action="@link(0, "first_name")" method="GET">
-            <input type="search" id="searchbox" name="f" value="@currentFilter" placeholder="Filter by actor name...">
+        <form action="@link(0, "title")" method="GET">
+            <input type="search" id="searchbox" name="f" value="@currentFilter" placeholder="Filter by film name...">
             <input type="submit" id="searchsubmit" value="Filter by name" class="btn primary">
         </form>
 
-        <a class="btn success" id="add" href="@routes.HomeController.create()">Add a new actor</a>
+        <a class="btn success" id="add" href="@routes.HomeController.create()">Add a new film</a>
 
     </div>
 
@@ -67,16 +67,18 @@
         <table class="actors zebra-striped">
             <thead>
                 <tr>
-                    @header("first_name", "Actor name")
-                    @header("last_name", "Last name")
+                    @header("title", "Film title")
+                    @header("description", "Film description")
                 </tr>
             </thead>
             <tbody>
 
-                @for(actor <- currentPage.getList.asScala) {
+                @for(film <- currentPage.getList.asScala) {
                     <tr>
-                        <td><a href="@routes.ActorController.edit(actor.id)">@actor.first_name</a></td>
-                        <td>@actor.last_name</td>
+                        @*<td><a href="@routes.HomeController.edit(actor.id)">@actor.first_name</a></td>*@
+                        <td>@film.title</td>
+                        <td>@film.description</td>
+                        @*<td>@actor.last_name</td>*@
                     </tr>
                 }
 

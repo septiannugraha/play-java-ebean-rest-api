@@ -1,15 +1,18 @@
 package controllers;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import models.Computer;
 import play.data.Form;
 import play.data.FormFactory;
+import play.libs.Json;
 import play.libs.concurrent.HttpExecutionContext;
 import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.Results;
+import repository.ActorRepository;
 import repository.CompanyRepository;
 import repository.ComputerRepository;
-import repository.ActorRepository;
+import repository.FilmRepository;
 
 import javax.inject.Inject;
 import javax.persistence.PersistenceException;
@@ -23,6 +26,7 @@ public class HomeController extends Controller {
 
     private final ComputerRepository computerRepository;
     private final ActorRepository actorRepository;
+    private final FilmRepository filmRepository;
     private final CompanyRepository companyRepository;
     private final FormFactory formFactory;
     private final HttpExecutionContext httpExecutionContext;
@@ -31,10 +35,12 @@ public class HomeController extends Controller {
     public HomeController(FormFactory formFactory,
                           ComputerRepository computerRepository,
                           ActorRepository actorRepository,
+                          FilmRepository filmRepository,
                           CompanyRepository companyRepository,
                           HttpExecutionContext httpExecutionContext) {
         this.computerRepository = computerRepository;
         this.actorRepository = actorRepository;
+        this.filmRepository = filmRepository;
         this.formFactory = formFactory;
         this.companyRepository = companyRepository;
         this.httpExecutionContext = httpExecutionContext;
@@ -70,6 +76,15 @@ public class HomeController extends Controller {
         }, httpExecutionContext.current());
     }
 
+    public CompletionStage<Result> json() {
+        // Run a db operation in another thread (using DatabaseExecutionContext)
+        return computerRepository.json().thenApplyAsync(list -> {
+            // This is the HTTP rendering thread context
+            JsonNode computerJson = Json.toJson(list);
+            return ok(computerJson);
+        }, httpExecutionContext.current());
+    }
+
     /**
      * Display the paginated list of actors.
      *
@@ -85,6 +100,23 @@ public class HomeController extends Controller {
             return ok(views.html.list2.render(list, sortBy, order, filter));
         }, httpExecutionContext.current());
     }
+
+    /**
+     * Display the paginated list of films.
+     *
+     * @param page   Current page number (starts from 0)
+     * @param sortBy Column to be sorted
+     * @param order  Sort order (either asc or desc)
+     * @param filter Filter applied on computer names
+     */
+    public CompletionStage<Result> list3(int page, String sortBy, String order, String filter) {
+        // Run a db operation in another thread (using DatabaseExecutionContext)
+        return filmRepository.page(page, 10, sortBy, order, filter).thenApplyAsync(list -> {
+            // This is the HTTP rendering thread context
+            return ok(views.html.list3.render(list, sortBy, order, filter));
+        }, httpExecutionContext.current());
+    }
+
     /**
      * Display the 'edit form' of a existing Computer.
      *

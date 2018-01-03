@@ -7,7 +7,14 @@ GET     /                           controllers.HomeController.index()
 
 # Computers list (look at the default values for pagination parameters)
 GET     /computers                  controllers.HomeController.list(p:Int ?= 0, s ?= "name", o ?= "asc", f ?= "")
-GET     /actors                  controllers.HomeController.list2(p:Int ?= 0, s ?= "first_name", o ?= "asc", f ?= "")
+GET     /json/computers             controllers.HomeController.json()
+
+# Actors List
+GET     /actors                     controllers.ActorController.list(p:Int ?= 0, s ?= "first_name", o ?= "asc", f ?= "")
+GET     /json/actors             controllers.ActorController.json()
+
+# Films List
+GET     /films                      controllers.HomeController.list3(p:Int ?= 0, s ?= "title", o ?= "asc", f ?= "")
 
 # Add computer
 GET     /computers/new              controllers.HomeController.create()
@@ -17,8 +24,15 @@ POST    /computers                  controllers.HomeController.save()
 GET     /computers/:id              controllers.HomeController.edit(id:Long)
 POST    /computers/:id              controllers.HomeController.update(id:Long)
 
+## Edit existing actor
+GET     /actors/:id              controllers.ActorController.edit(id:Long)
+POST    /actors/:id              controllers.ActorController.update(id:Long)
+
 # Delete a computer
 POST    /computers/:id/delete       controllers.HomeController.delete(id:Long)
+
+# Delete an actor
+POST    /actors/:id/delete       controllers.ActorController.delete(id:Long)
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.at(path="/public", file)
